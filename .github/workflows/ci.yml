@@ -16,6 +16,12 @@ jobs:
       with:
         fetch-depth: 0  # Important for tags and history
 
+    - name: Extract environment from tag
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      run: |
+        echo "TAG_SUFFIX=$(echo ${GITHUB_REF#refs/tags/v} | cut -d'-' -f2-3)" >> $GITHUB_ENV
+        echo "Extracted TAG_SUFFIX=${{ env.TAG_SUFFIX }}"
+        
     - name: Echo result
       run: |
         echo "${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_{0}', env.TAG_SUFFIX)] }}"
