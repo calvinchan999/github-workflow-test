@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  push:
+    tags:
+      - "v*"
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Important for tags and history
+
+    - name: Echo result
+      run: |
+        echo "${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_{0}', env.TAG_SUFFIX)] }}"
